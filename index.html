@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verbformen üben 🇩🇪</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(160deg, #6a11cb 0%, #2575fc 100%);
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 18px 16px 32px;
+    }
+
+    #app {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .title {
+      color: white;
+      font-size: 1.75em;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      margin-bottom: 14px;
+    }
+
+    .mode-buttons {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .mode-btn {
+      flex: 1;
+      max-width: 148px;
+      padding: 10px 6px;
+      border: 2px solid rgba(255,255,255,0.45);
+      border-radius: 50px;
+      background: transparent;
+      color: white;
+      font-size: 0.82em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, color 0.18s, box-shadow 0.18s;
+    }
+    .mode-btn:hover { background: rgba(255,255,255,0.18); }
+    .mode-btn.active {
+      background: white;
+      color: #5a0dbc;
+      border-color: white;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+    }
+
+    .progress-section {
+      margin-bottom: 16px;
+      text-align: center;
+      color: rgba(255,255,255,0.92);
+    }
+    .progress-text {
+      font-size: 0.9em;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .progress-bar-outer {
+      background: rgba(255,255,255,0.22);
+      border-radius: 10px;
+      height: 7px;
+      overflow: hidden;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      background: white;
+      border-radius: 10px;
+      transition: width 0.35s ease;
+    }
+
+    .card-scene { perspective: 1200px; margin-bottom: 14px; }
+
+    .card {
+      width: 100%;
+      min-height: 290px;
+      border-radius: 22px;
+      padding: 30px 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 14px 44px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.18) 0%, transparent 65%);
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    .card.bg-blue   { background: linear-gradient(135deg, #4facfe 0%, #00c6ff 100%); }
+    .card.bg-green  { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+    .card.bg-orange { background: linear-gradient(135deg, #f7971e 0%, #f64f59 100%); }
+    .card.bg-purple { background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); cursor: default; }
+
+    .card.flip-out { transition: transform 0.18s ease-in; transform: rotateY(90deg) scale(0.96); }
+    .card.flip-in  { transition: transform 0.18s ease-out; transform: rotateY(0deg) scale(1); }
+
+    .card-label {
+      font-size: 0.78em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      color: rgba(255,255,255,0.72);
+      margin-bottom: 12px;
+    }
+
+    .card-word {
+      font-size: 2.3em;
+      font-weight: 800;
+      color: white;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.18);
+      line-height: 1.25;
+      word-break: break-word;
+    }
+
+    .card-hint {
+      font-size: 0.78em;
+      color: rgba(255,255,255,0.65);
+      margin-top: 22px;
+      font-style: italic;
+    }
+
+    .three-forms { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+
+    .form-row {
+      background: rgba(255,255,255,0.18);
+      border-radius: 14px;
+      padding: 12px 18px;
+    }
+    .form-row .flabel {
+      font-size: 0.7em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 3px;
+    }
+    .form-row .fvalue {
+      font-size: 1.4em;
+      font-weight: 800;
+      color: white;
+      word-break: break-word;
+    }
+
+    .state-dots {
+      display: flex;
+      gap: 9px;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transition: background 0.25s, transform 0.25s;
+    }
+    .dot.done   { background: rgba(255,255,255,0.65); }
+    .dot.active { background: white; transform: scale(1.35); }
+
+    .nav-row { display: flex; gap: 12px; }
+
+    .nav-btn {
+      flex: 1;
+      padding: 14px 10px;
+      border: none;
+      border-radius: 50px;
+      background: rgba(255,255,255,0.18);
+      color: white;
+      font-size: 1em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.12s;
+      backdrop-filter: blur(6px);
+    }
+    .nav-btn:hover:not(:disabled) { background: rgba(255,255,255,0.32); transform: translateY(-2px); }
+    .nav-btn:active:not(:disabled) { transform: translateY(0); }
+    .nav-btn:disabled { opacity: 0.28; cursor: not-allowed; }
+
+    #finish-banner {
+      display: none;
+      text-align: center;
+      color: white;
+      background: rgba(255,255,255,0.18);
+      border-radius: 18px;
+      padding: 22px 18px;
+      margin-top: 16px;
+      font-size: 1.1em;
+      font-weight: 700;
+      backdrop-filter: blur(6px);
+    }
+    #finish-banner .big-emoji { font-size: 2.5em; display: block; margin-bottom: 8px; }
+
+    @media (max-width: 360px) {
+      .card-word { font-size: 1.8em; }
+      .mode-btn  { font-size: 0.76em; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <div class="header">
+    <div class="title">🇩🇪 Verbformen üben</div>
+    <div class="mode-buttons">
+      <button class="mode-btn active" onclick="setMode(1)">📚 Kennen</button>
+      <button class="mode-btn"        onclick="setMode(2)">✏️ Lernen</button>
+      <button class="mode-btn"        onclick="setMode(3)">🎯 Testen</button>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-text" id="progress-text">Verb 1 von 103</div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="progress-fill" style="width:1%"></div>
+    </div>
+  </div>
+
+  <div class="card-scene">
+    <div class="card bg-purple" id="card" onclick="handleCardClick()">
+      <div id="card-content"></div>
+    </div>
+  </div>
+
+  <div class="state-dots" id="state-dots" style="display:none">
+    <div class="dot" id="dot0"></div>
+    <div class="dot" id="dot1"></div>
+    <div class="dot" id="dot2"></div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="btn-prev" onclick="navigate(-1)">← Zurück</button>
+    <button class="nav-btn" id="btn-next" onclick="navigate(1)">Weiter →</button>
+  </div>
+
+  <div id="finish-banner">
+    <span class="big-emoji">🎉</span>
+    Super gemacht, Julia!<br>Alle Verben geschafft!<br><br>
+    <button class="nav-btn" style="max-width:200px;margin-top:10px" onclick="restart()">Nochmal 🔄</button>
+  </div>
+
+</div>
+<script>
+const VERBS = [
+  { g:"backen",       p:"ich backe",       pt:"ich backte / ich buk" },
+  { g:"befehlen",     p:"ich befehle",     pt:"ich befahl" },
+  { g:"beginnen",     p:"ich beginne",     pt:"ich begann" },
+  { g:"beißen",       p:"ich beiße",       pt:"ich biss" },
+  { g:"biegen",       p:"ich biege",       pt:"ich bog" },
+  { g:"bieten",       p:"ich biete",       pt:"ich bot" },
+  { g:"binden",       p:"ich binde",       pt:"ich band" },
+  { g:"bitten",       p:"ich bitte",       pt:"ich bat" },
+  { g:"blasen",       p:"ich blase",       pt:"ich blies" },
+  { g:"bleiben",      p:"ich bleibe",      pt:"ich blieb" },
+  { g:"braten",       p:"ich brate",       pt:"ich briet" },
+  { g:"brechen",      p:"ich breche",      pt:"ich brach" },
+  { g:"bringen",      p:"ich bringe",      pt:"ich brachte" },
+  { g:"denken",       p:"ich denke",       pt:"ich dachte" },
+  { g:"dürfen",       p:"ich darf",        pt:"ich durfte" },
+  { g:"empfangen",    p:"ich empfange",    pt:"ich empfing" },
+  { g:"empfehlen",    p:"ich empfehle",    pt:"ich empfahl" },
+  { g:"empfinden",    p:"ich empfinde",    pt:"ich empfand" },
+  { g:"erschrecken",  p:"ich erschrecke",  pt:"ich erschrak" },
+  { g:"essen",        p:"ich esse",        pt:"ich aß" },
+  { g:"fahren",       p:"ich fahre",       pt:"ich fuhr" },
+  { g:"fallen",       p:"ich falle",       pt:"ich fiel" },
+  { g:"fangen",       p:"ich fange",       pt:"ich fing" },
+  { g:"finden",       p:"ich finde",       pt:"ich fand" },
+  { g:"fliegen",      p:"ich fliege",      pt:"ich flog" },
+  { g:"fliehen",      p:"ich fliehe",      pt:"ich floh" },
+  { g:"fließen",      p:"es fließt",       pt:"es floss" },
+  { g:"fressen",      p:"ich fresse",      pt:"ich fraß" },
+  { g:"frieren",      p:"ich friere",      pt:"ich fror" },
+  { g:"geben",        p:"ich gebe",        pt:"ich gab" },
+  { g:"gehen",        p:"ich gehe",        pt:"ich ging" },
+  { g:"genießen",     p:"ich genieße",     pt:"ich genoss" },
+  { g:"geschehen",    p:"es geschieht",    pt:"es geschah" },
+  { g:"gewinnen",     p:"ich gewinne",     pt:"ich gewann" },
+  { g:"gießen",       p:"ich gieße",       pt:"ich goss" },
+  { g:"graben",       p:"ich grabe",       pt:"ich grub" },
+  { g:"greifen",      p:"ich greife",      pt:"ich griff" },
+  { g:"haben",        p:"ich habe",        pt:"ich hatte" },
+  { g:"hängen",       p:"ich hänge",       pt:"ich hing" },
+  { g:"halten",       p:"ich halte",       pt:"ich hielt" },
+  { g:"heben",        p:"ich hebe",        pt:"ich hob" },
+  { g:"helfen",       p:"ich helfe",       pt:"ich half" },
+  { g:"kennen",       p:"ich kenne",       pt:"ich kannte" },
+  { g:"kommen",       p:"ich komme",       pt:"ich kam" },
+  { g:"können",       p:"ich kann",        pt:"ich konnte" },
+  { g:"kriechen",     p:"ich krieche",     pt:"ich kroch" },
+  { g:"lassen",       p:"ich lasse",       pt:"ich ließ" },
+  { g:"laufen",       p:"ich laufe",       pt:"ich lief" },
+  { g:"leihen",       p:"ich leihe",       pt:"ich lieh" },
+  { g:"lesen",        p:"ich lese",        pt:"ich las" },
+  { g:"liegen",       p:"ich liege",       pt:"ich lag" },
+  { g:"lügen",        p:"ich lüge",        pt:"ich log" },
+  { g:"messen",       p:"ich messe",       pt:"ich maß" },
+  { g:"mögen",        p:"ich mag",         pt:"ich mochte" },
+  { g:"nehmen",       p:"ich nehme",       pt:"ich nahm" },
+  { g:"nennen",       p:"ich nenne",       pt:"ich nannte" },
+  { g:"pfeifen",      p:"ich pfeife",      pt:"ich pfiff" },
+  { g:"raten",        p:"ich rate",        pt:"ich riet" },
+  { g:"reiben",       p:"ich reibe",       pt:"ich rieb" },
+  { g:"reißen",       p:"ich reiße",       pt:"ich riss" },
+  { g:"reiten",       p:"ich reite",       pt:"ich ritt" },
+  { g:"rennen",       p:"ich renne",       pt:"ich rannte" },
+  { g:"riechen",      p:"ich rieche",      pt:"ich roch" },
+  { g:"rufen",        p:"ich rufe",        pt:"ich rief" },
+  { g:"scheinen",     p:"es scheint",      pt:"es schien" },
+  { g:"schieben",     p:"ich schiebe",     pt:"ich schob" },
+  { g:"schießen",     p:"ich schieße",     pt:"ich schoss" },
+  { g:"schlafen",     p:"ich schlafe",     pt:"ich schlief" },
+  { g:"schlagen",     p:"ich schlage",     pt:"ich schlug" },
+  { g:"schleichen",   p:"ich schleiche",   pt:"ich schlich" },
+  { g:"schließen",    p:"ich schließe",    pt:"ich schloss" },
+  { g:"schmelzen",    p:"es schmilzt",     pt:"es schmolz" },
+  { g:"schneiden",    p:"ich schneide",    pt:"ich schnitt" },
+  { g:"schreiben",    p:"ich schreibe",    pt:"ich schrieb" },
+  { g:"schreien",     p:"ich schreie",     pt:"ich schrie" },
+  { g:"schweigen",    p:"ich schweige",    pt:"ich schwieg" },
+  { g:"schwimmen",    p:"ich schwimme",    pt:"ich schwamm" },
+  { g:"schwören",     p:"ich schwöre",     pt:"ich schwor" },
+  { g:"sehen",        p:"ich sehe",        pt:"ich sah" },
+  { g:"sein",         p:"ich bin",         pt:"ich war" },
+  { g:"singen",       p:"ich singe",       pt:"ich sang" },
+  { g:"sitzen",       p:"ich sitze",       pt:"ich saß" },
+  { g:"sprechen",     p:"ich spreche",     pt:"ich sprach" },
+  { g:"springen",     p:"ich springe",     pt:"ich sprang" },
+  { g:"stehen",       p:"ich stehe",       pt:"ich stand" },
+  { g:"steigen",      p:"ich steige",      pt:"ich stieg" },
+  { g:"streiten",     p:"ich streite",     pt:"ich stritt" },
+  { g:"tragen",       p:"ich trage",       pt:"ich trug" },
+  { g:"treffen",      p:"ich treffe",      pt:"ich traf" },
+  { g:"treten",       p:"ich trete",       pt:"ich trat" },
+  { g:"trinken",      p:"ich trinke",      pt:"ich trank" },
+  { g:"vergessen",    p:"ich vergesse",    pt:"ich vergaß" },
+  { g:"vergleichen",  p:"ich vergleiche",  pt:"ich verglich" },
+  { g:"verlieren",    p:"ich verliere",    pt:"ich verlor" },
+  { g:"verschwinden", p:"ich verschwinde", pt:"ich verschwand" },
+  { g:"wachsen",      p:"ich wachse",      pt:"ich wuchs" },
+  { g:"waschen",      p:"ich wasche",      pt:"ich wusch" },
+  { g:"werden",       p:"ich werde",       pt:"ich wurde" },
+  { g:"werfen",       p:"ich werfe",       pt:"ich warf" },
+  { g:"wiegen",       p:"ich wiege",       pt:"ich wog" },
+  { g:"wissen",       p:"ich weiß",        pt:"ich wusste" },
+  { g:"wollen",       p:"ich will",        pt:"ich wollte" },
+  { g:"ziehen",       p:"ich ziehe",       pt:"ich zog" },
+];
+
+let mode=1, deck=[], idx=0, state=0, busy=false;
+
+function shuffle(arr) {
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function setMode(m) {
+  mode=m;
+  document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active',i+1===m));
+  deck=m===3?shuffle(VERBS):[...VERBS]; idx=0; state=0;
+  document.getElementById('state-dots').style.display=m===1?'none':'flex';
+  document.getElementById('finish-banner').style.display='none';
+  renderNow();
+}
+
+function renderNow() {
+  const card=document.getElementById('card');
+  const content=document.getElementById('card-content');
+  const verb=deck[idx], total=deck.length;
+  document.getElementById('progress-text').textContent=`Verb ${idx+1} von ${total}`;
+  document.getElementById('progress-fill').style.width=`${((idx+1)/total)*100}%`;
+  document.getElementById('btn-prev').disabled=idx===0;
+  document.getElementById('btn-next').disabled=idx===total-1;
+  if(mode!==1){['dot0','dot1','dot2'].forEach((id,i)=>{const d=document.getElementById(id);d.className='dot'+(i===state?' active':i<state?' done':'');});}
+  card.className='card '+cardBg();
+  if(mode===1){
+    content.innerHTML=`<div class="three-forms"><div class="form-row"><div class="flabel">Grundform</div><div class="fvalue">${verb.g}</div></div><div class="form-row"><div class="flabel">Präsens</div><div class="fvalue">${verb.p}</div></div><div class="form-row"><div class="flabel">Präteritum</div><div class="fvalue">${verb.pt}</div></div></div>`;
+    return;
+  }
+  const hints=['👆 Tippe zum Aufdecken','👆 Tippe für Präteritum','→ Weiter mit dem Pfeil'];
+  const labels=['Grundform','Präsens','Präteritum'];
+  const words=[verb.g,verb.p,verb.pt];
+  content.innerHTML=`<div class="card-label">${labels[state]}</div><div class="card-word">${words[state]}</div><div class="card-hint">${hints[state]}</div>`;
+}
+
+function cardBg(){return mode===1?'bg-purple':['bg-blue','bg-green','bg-orange'][state];}
+
+function withFlip(fn){
+  if(busy)return; busy=true;
+  const card=document.getElementById('card');
+  card.classList.add('flip-out');
+  setTimeout(()=>{fn();renderNow();card.classList.remove('flip-out');card.classList.add('flip-in');setTimeout(()=>{card.classList.remove('flip-in');busy=false;},190);},185);
+}
+
+function handleCardClick(){if(mode===1||busy||state>=2)return;withFlip(()=>{state++;});}
+
+function navigate(dir){
+  if(busy)return;
+  const next=idx+dir;
+  if(next<0||next>=deck.length)return;
+  withFlip(()=>{idx=next;state=0;});
+  if(next===deck.length-1&&mode!==1){setTimeout(()=>{if(idx===deck.length-1)document.getElementById('finish-banner').style.display='block';},600);}
+  else{document.getElementById('finish-banner').style.display='none';}
+}
+
+function restart(){document.getElementById('finish-banner').style.display='none';setMode(mode);}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();navigate(1);}
+  if(e.key==='ArrowLeft'){e.preventDefault();navigate(-1);}
+  if(e.key==='Enter'){e.preventDefault();handleCardClick();}
+});
+
+setMode(1);
+</script>
+</body>
+</html>
